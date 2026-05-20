@@ -15,6 +15,7 @@
 
 import functools
 import os
+import subprocess
 
 from ..exceptions import RipeAtlasToolsException
 from ..settings import Configuration, conf
@@ -64,7 +65,7 @@ class Command(BaseCommand):
         self._create_if_necessary()
 
         if self.arguments.editor:
-            os.system("{0} {1}".format(self.EDITOR, Configuration.USER_RC))
+            subprocess.run([self.EDITOR, Configuration.USER_RC])
 
         if self.arguments.init or self.arguments.editor:
             return self.ok(

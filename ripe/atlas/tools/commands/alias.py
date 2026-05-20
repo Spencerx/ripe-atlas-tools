@@ -14,6 +14,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
+import subprocess
 
 from ..exceptions import RipeAtlasToolsException
 from ..helpers.validators import ArgumentType
@@ -110,7 +111,7 @@ class Command(BaseCommand):
             )
 
         if self.arguments.action == "editor":
-            os.system("{0} {1}".format(self.EDITOR, AliasesDB.USER_RC))
+            subprocess.run([self.EDITOR, AliasesDB.USER_RC])
             return self.ok("Aliases file writen to {}".format(AliasesDB.USER_RC))
 
         else:
