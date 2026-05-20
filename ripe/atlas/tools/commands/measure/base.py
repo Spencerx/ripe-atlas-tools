@@ -209,6 +209,66 @@ class Command(BaseCommand):
             "way to re-create a measurement under conditions similar to "
             "another measurement. Example: --from-measurement=1000192",
         )
+        origins.add_argument(
+            "--from-region",
+            type=str,
+            choices=(
+                # RIR regions
+                "afrinic",
+                "apnic",
+                "arin",
+                "lacnic",
+                "ripencc",
+                # Continental regions (UN geoscheme)
+                "africa",
+                "americas",
+                "antarctica",
+                "asia",
+                "europe",
+                "oceania",
+                # African sub-regions
+                "northern_africa",
+                "sub_saharan_africa",
+                "eastern_africa",
+                "middle_africa",
+                "southern_africa",
+                "western_africa",
+                # American sub-regions
+                "caribbean",
+                "central_america",
+                "latin_america_and_caribbean",
+                "northern_america",
+                "south_america",
+                # Asian sub-regions
+                "central_asia",
+                "eastern_asia",
+                "south_eastern_asia",
+                "southern_asia",
+                "western_asia",
+                # European sub-regions
+                "eastern_europe",
+                "northern_europe",
+                "southern_europe",
+                "western_europe",
+                # Oceanian sub-regions
+                "australia_and_new_zealand",
+                "melanesia",
+                "micronesia",
+                "polynesia",
+                # Political/economic groupings
+                "eu27",
+            ),
+            help="A pre-defined region name from which you'd like to select "
+            "your probes. Example: --from-region=ripencc",
+        )
+        origins.add_argument(
+            "--from-countries",
+            type=ArgumentType.comma_separated_country_codes,
+            metavar="COUNTRIES",
+            help="A comma-separated list of two-letter ISO country codes from "
+            "which you'd like to select your probes. "
+            "Example: --from-countries=GR,NL,DE",
+        )
         self.parser.add_argument(
             "--probes",
             type=ArgumentType.integer_range(minimum=1),
@@ -499,6 +559,12 @@ class Command(BaseCommand):
         elif self.arguments.from_measurement:
             r["type"] = "msm"
             r["value"] = self.arguments.from_measurement
+        elif self.arguments.from_region:
+            r["type"] = "region"
+            r["value"] = self.arguments.from_region
+        elif self.arguments.from_countries:
+            r["type"] = "countries"
+            r["value"] = self.arguments.from_countries
 
         r["tags"] = {
             "include": self.arguments.include_tag or [],
