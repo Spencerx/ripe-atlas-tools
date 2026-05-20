@@ -519,6 +519,18 @@ Option                  Arguments           Explanation
                                             under conditions similar to another
                                             measurement.
 
+``--from-region``       One of: afrinic,    A pre-defined region name from which
+                        apnic, arin,        you'd like to select your probes.
+                        lacnic, ripencc,    Supported values include RIR regions
+                        africa, americas,   (afrinic, apnic, arin, lacnic,
+                        asia, europe,       ripencc), continental regions, UN
+                        oceania, and        geoscheme sub-regions, and political
+                        many sub-regions    groupings (eu27).
+
+``--from-countries``    A comma-separated   A comma-separated list of two-letter
+                        list of ISO         ISO country codes from which you'd
+                        country codes       like to select your probes.
+
 ``--probes``            An integer          The number of probes you want to
                                             use.
 
