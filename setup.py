@@ -33,7 +33,6 @@ setup(
     maintainer="The RIPE Atlas team",
     maintainer_email="atlas@ripe.net",
     install_requires=[
-        "IPy",
         "python-dateutil",
         "requests",
         "urllib3>=2.5.0",
