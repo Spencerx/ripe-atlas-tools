@@ -302,6 +302,7 @@ class Command(BaseCommand):
                     "key": self.arguments.auth,
                     "address": self.arguments.location,
                 },
+                timeout=conf["http-timeout"],
             )
         except (
             requests.ConnectionError,

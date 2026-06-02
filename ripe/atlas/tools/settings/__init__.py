@@ -171,6 +171,7 @@ class Configuration(UserSettingsParser):
             "stream-base-url": "https://atlas-stream.ripe.net",
             "version": 0,
         },
+        "http-timeout": 10,
     }
 
     @staticmethod

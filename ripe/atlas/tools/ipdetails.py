@@ -17,6 +17,7 @@ import requests
 import IPy
 
 from .cache import cache
+from .settings import conf
 
 
 class IP(object):
@@ -102,7 +103,7 @@ class IP(object):
         details = {}
 
         try:
-            response = requests.get(URL)
+            response = requests.get(URL, timeout=conf["http-timeout"])
             if not response.ok:
                 return details
             res = response.json()
