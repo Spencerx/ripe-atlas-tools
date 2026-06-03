@@ -1,5 +1,17 @@
 Release History
 ===============
+3.4.0 (release 2026-06-03)
+--------------------------
+- Add ``--from-region`` and ``--from-countries`` probe source types to the measure command
+- Replace pickle-based cache with JSON serialisation to prevent deserialisation attacks
+- Replace ``IPy`` dependency with stdlib ``ipaddress``, fixing octal-encoded IP bypass
+- Add configurable HTTP timeout (``http-timeout``, default 10s) for external API calls
+- Fix ``--description`` being ignored for DNS measurements without a target
+- Replace ``os.system`` with ``subprocess.run`` in configure and alias commands
+- Replace ``yaml.FullLoader`` with ``yaml.safe_load`` in settings parser
+- Pin GitHub Actions to full-length commit SHAs
+- Upgrade ripe.atlas.cousteau dependency to >=2.3,<3
+
 3.3.1 (release 2025-12-09)
 --------------------------
 - Upgraded dependency ripe-atlas-cousteau>=2.2,<3
