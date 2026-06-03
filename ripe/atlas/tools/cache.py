@@ -127,7 +127,7 @@ class LocalCache(object):
     def _get_or_create_db_path():
 
         v = sys.version_info
-        file_name = "cache-json-{}.{}.{}.db".format(v.major, v.minor, v.micro)
+        file_name = "cache-json-{}.{}.{}".format(v.major, v.minor, v.micro)
 
         db_path = os.path.join("/", "tmp", file_name)
         if "HOME" in os.environ:
