@@ -19,6 +19,7 @@ import requests
 from ..cache import cache
 from ..helpers.colours import colourise
 from ..helpers.sanitisers import sanitise
+from ..settings import conf
 from .base import Command as BaseCommand
 
 
@@ -124,7 +125,9 @@ class Command(BaseCommand):
     def _update_statistics_from_url(self, url):
 
         response = requests.get(
-            "{}{}".format(self.URLS["root"], url), headers=self.HEADERS
+            "{}{}".format(self.URLS["root"], url),
+            headers=self.HEADERS,
+            timeout=conf["http-timeout"],
         )
 
         contributors = response.json()
@@ -162,6 +165,7 @@ class Command(BaseCommand):
                     self.URLS["root"], self.URLS["users"], username
                 ),
                 headers=self.HEADERS,
+                timeout=conf["http-timeout"],
             ).json(),
             60 * 60 * 24 * 365,
         )

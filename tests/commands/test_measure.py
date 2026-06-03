@@ -894,6 +894,30 @@ class TestMeasureCommand(unittest.TestCase):
             )
 
             cmd = klass()
+            cmd.init_args(args + ["--probes", "10", "--from-region", "ripencc"])
+            self.assertEqual(
+                cmd._get_source_kwargs(),
+                {
+                    "requested": 10,
+                    "type": "region",
+                    "value": "ripencc",
+                    "tags": {"include": includes, "exclude": excludes},
+                },
+            )
+
+            cmd = klass()
+            cmd.init_args(args + ["--probes", "10", "--from-countries", "gr,nl,de"])
+            self.assertEqual(
+                cmd._get_source_kwargs(),
+                {
+                    "requested": 10,
+                    "type": "countries",
+                    "value": "GR,NL,DE",
+                    "tags": {"include": includes, "exclude": excludes},
+                },
+            )
+
+            cmd = klass()
             cmd.init_args(
                 args
                 + ["--include-tag", "tag-to-include", "--exclude-tag", "tag-to-exclude"]
@@ -1006,6 +1030,31 @@ class TestMeasureCommand(unittest.TestCase):
                     "ripe-atlas measure: error: argument --from-area: invalid "
                     "choice:"
                 )
+            )
+
+        with capture_sys_output() as (stdout, stderr):
+            with self.assertRaises(SystemExit):
+                PingMeasureCommand().init_args(
+                    ["ping", "--from-region", "not a region"]
+                )
+            self.assertTrue(
+                stderr.getvalue()
+                .split("\n")[-2]
+                .startswith(
+                    "ripe-atlas measure: error: argument --from-region: invalid "
+                    "choice:"
+                )
+            )
+
+        with capture_sys_output() as (stdout, stderr):
+            with self.assertRaises(SystemExit):
+                PingMeasureCommand().init_args(
+                    ["ping", "--from-countries", "GR,INVALID,NL"]
+                )
+            self.assertEqual(
+                stderr.getvalue().split("\n")[-2],
+                'ripe-atlas measure: error: argument --from-countries: '
+                '"INVALID" is not a valid two-letter ISO country code',
             )
 
         with capture_sys_output() as (stdout, stderr):

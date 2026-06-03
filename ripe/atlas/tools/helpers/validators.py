@@ -41,6 +41,16 @@ class ArgumentType(object):
         return string.upper()
 
     @staticmethod
+    def comma_separated_country_codes(string):
+        codes = [c.strip() for c in string.split(",")]
+        for code in codes:
+            if not re.match(r"^[a-zA-Z][a-zA-Z]$", code):
+                raise argparse.ArgumentTypeError(
+                    '"{}" is not a valid two-letter ISO country code'.format(code)
+                )
+        return ",".join(c.upper() for c in codes)
+
+    @staticmethod
     def datetime(string):
         try:
             return parser.parse(string)

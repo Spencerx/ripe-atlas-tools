@@ -12,11 +12,12 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+import re
 import sys
 import os
 
-__version__ = None
-exec(open("../ripe/atlas/tools/version.py").read())
+with open("../ripe/atlas/tools/version.py") as _f:
+    __version__ = re.search(r'^__version__\s*=\s*["\']([^"\']+)["\']', _f.read(), re.M).group(1)
 
 
 # Believe it or not, this is the officially sanctioned way to add custom CSS.

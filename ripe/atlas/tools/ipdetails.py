@@ -13,10 +13,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import ipaddress
 import requests
-import IPy
 
 from .cache import cache
+from .settings import conf
 
 
 class IP(object):
@@ -26,22 +27,11 @@ class IP(object):
 
     def __init__(self, address):
         self.cached_prefix_found = False
-        self.ip_object = IPy.IP(address)
-
-        self.address = self.ip_object.strFullsize()
+        self.ip_object = ipaddress.ip_address(address)
+        self.address = str(self.ip_object)
         self.asn = None
         self.holder = None
         self.prefix = None
-        self.not_querable_types = [
-            "RESERVED",
-            "UNSPECIFIED",
-            "LOOPBACK",
-            "UNASSIGNED",
-            "DOCUMENTATION",
-            "ULA",
-            "LINKLOCAL",
-            "PRIVATE",
-        ]
 
         details = self._get_details()
         if details:
@@ -70,8 +60,8 @@ class IP(object):
         return details
 
     def is_querable(self):
-        """Determines if address is worth querable."""
-        return self.ip_object.iptype() not in self.not_querable_types
+        """Determines if address is worth querying."""
+        return self.ip_object.is_global
 
     def get_from_cached_prefix(self):
         """Search cache for existing cached Prefix"""
@@ -87,7 +77,7 @@ class IP(object):
             if not prefix_details:
                 continue
 
-            prefix = IPy.IP(prefix_details["Prefix"])
+            prefix = ipaddress.ip_network(prefix_details["Prefix"], strict=False)
 
             if self.ip_object in prefix:
                 details = prefix_details
@@ -102,7 +92,7 @@ class IP(object):
         details = {}
 
         try:
-            response = requests.get(URL)
+            response = requests.get(URL, timeout=conf["http-timeout"])
             if not response.ok:
                 return details
             res = response.json()

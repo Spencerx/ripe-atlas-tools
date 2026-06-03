@@ -32,7 +32,7 @@ class UserSettingsParser(object):
         r = copy.deepcopy(self.DEFAULT)
         if os.path.exists(self.USER_RC):
             with open(self.USER_RC) as y:
-                custom = yaml.load(y, Loader=yaml.FullLoader)
+                custom = yaml.safe_load(y)
                 if custom:
                     r = self.deep_update(r, custom)
         return r
@@ -171,6 +171,7 @@ class Configuration(UserSettingsParser):
             "stream-base-url": "https://atlas-stream.ripe.net",
             "version": 0,
         },
+        "http-timeout": 10,
     }
 
     @staticmethod

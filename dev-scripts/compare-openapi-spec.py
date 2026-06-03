@@ -154,7 +154,7 @@ def compare_type(cmd_name, api_model, expected_differences):
 
 
 if __name__ == "__main__":
-    api_spec = requests.get(openapi_url).json()
+    api_spec = requests.get(openapi_url, timeout=10).json()
 
     for cmd_name, api_name in types:
         compare_type(

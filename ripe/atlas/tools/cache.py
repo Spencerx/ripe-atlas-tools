@@ -15,13 +15,9 @@
 
 import datetime
 import functools
+import json
 import os
 import sys
-
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
 
 try:
     import anydbm as dbm  # anydbm py2.7 will use the best available dbm
@@ -29,6 +25,26 @@ except ImportError:
     import dbm  # ... and on Python3 dbm does the same
 
 from .helpers import xdg
+
+
+class _CacheEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime.datetime):
+            return {"__type__": "datetime", "value": obj.isoformat()}
+        from ripe.atlas.cousteau import Probe
+        if isinstance(obj, Probe):
+            return {"__type__": "Probe", "id": obj.id, "meta_data": obj.meta_data}
+        return super().default(obj)
+
+
+def _cache_decoder(dct):
+    t = dct.get("__type__")
+    if t == "datetime":
+        return datetime.datetime.fromisoformat(dct["value"])
+    if t == "Probe":
+        from ripe.atlas.cousteau import Probe
+        return Probe(id=dct["id"], meta_data=dct["meta_data"])
+    return dct
 
 
 class LocalCache(object):
@@ -55,7 +71,7 @@ class LocalCache(object):
         return self.get(key)
 
     def __setitem__(self, key, value, expires=None):
-        self._db[key] = pickle.dumps((expires, value))
+        self._db[key] = json.dumps([expires, value], cls=_CacheEncoder).encode()
 
     def __delitem__(self, key):
         if key not in self._db:
@@ -71,7 +87,9 @@ class LocalCache(object):
 
     def get(self, key, default=None):
         if key in self._db:
-            expires, value = pickle.loads(self._db[key])
+            expires, value = json.loads(
+                self._db[key].decode(), object_hook=_cache_decoder
+            )
             if not expires or expires > self._now:
                 return value
             else:
@@ -109,7 +127,7 @@ class LocalCache(object):
     def _get_or_create_db_path():
 
         v = sys.version_info
-        file_name = "cache-{}.{}.{}.db".format(v.major, v.minor, v.micro)
+        file_name = "cache-json-{}.{}.{}".format(v.major, v.minor, v.micro)
 
         db_path = os.path.join("/", "tmp", file_name)
         if "HOME" in os.environ:
@@ -137,7 +155,7 @@ class Memoiser(object):
 
     def __call__(self, *args, **kwargs):
 
-        key = pickle.dumps([args, kwargs])
+        key = repr([args, kwargs]).encode()
         value = cache[key]
 
         if value:

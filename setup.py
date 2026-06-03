@@ -1,9 +1,13 @@
 import os
+import re
 from os.path import abspath, dirname, join
 from setuptools import setup
 
-__version__ = None
-exec(open("ripe/atlas/tools/version.py").read())
+with open("ripe/atlas/tools/version.py") as _f:
+    __version__ = re.search(
+        r'^__version__\s*=\s*["\']([^"\']+)["\']', _f.read(), re.M
+    ).group(1)
+
 
 # Allow setup.py to be run from any path
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
@@ -31,11 +35,10 @@ setup(
     maintainer="The RIPE Atlas team",
     maintainer_email="atlas@ripe.net",
     install_requires=[
-        "IPy",
         "python-dateutil",
         "requests",
         "urllib3>=2.5.0",
-        "ripe.atlas.cousteau>=2.2,<3",
+        "ripe.atlas.cousteau>=2.3,<3",
         "ripe.atlas.sagan>=2,<3",
         "tzlocal",
         "pyyaml",

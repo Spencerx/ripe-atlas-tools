@@ -131,6 +131,8 @@ class DnsMeasureCommand(Command):
         return self.arguments.target
 
     def clean_description(self):
+        if self.arguments.description:
+            return self.arguments.description
         if self.arguments.target:
             return Command.clean_description(self)
         return "DNS measurement for {}".format(self.arguments.query_argument)
