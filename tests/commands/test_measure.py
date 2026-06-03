@@ -1034,7 +1034,9 @@ class TestMeasureCommand(unittest.TestCase):
 
         with capture_sys_output() as (stdout, stderr):
             with self.assertRaises(SystemExit):
-                PingMeasureCommand().init_args(["ping", "--from-region", "not a region"])
+                PingMeasureCommand().init_args(
+                    ["ping", "--from-region", "not a region"]
+                )
             self.assertTrue(
                 stderr.getvalue()
                 .split("\n")[-2]
