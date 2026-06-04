@@ -65,7 +65,7 @@ class Command(BaseCommand):
         self._create_if_necessary()
 
         if self.arguments.editor:
-            subprocess.run([self.EDITOR, Configuration.USER_RC])
+            subprocess.run([self.EDITOR, Configuration.USER_RC])  # nosec B603
 
         if self.arguments.init or self.arguments.editor:
             return self.ok(

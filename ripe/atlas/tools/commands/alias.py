@@ -111,7 +111,7 @@ class Command(BaseCommand):
             )
 
         if self.arguments.action == "editor":
-            subprocess.run([self.EDITOR, AliasesDB.USER_RC])
+            subprocess.run([self.EDITOR, AliasesDB.USER_RC])  # nosec B603
             return self.ok("Aliases file writen to {}".format(AliasesDB.USER_RC))
 
         else:
